@@ -171,17 +171,17 @@ public class HockeyappRecorder extends Recorder {
 			final Map parsedMap = (Map) parser.parse(new BufferedReader(
 					new InputStreamReader(is)));
 
-			HockeyappBuildAction installAction = new HockeyappBuildAction();
-			installAction.displayName = Messages.HOCKEYAPP_INSTALL_LINK();
-			installAction.iconFileName = "package.gif";
-			installAction.urlName = (String) parsedMap.get("public_url");
-			build.addAction(installAction);
-
-			HockeyappBuildAction configureAction = new HockeyappBuildAction();
-			configureAction.displayName = Messages.HOCKEYAPP_CONFIG_LINK();
-			configureAction.iconFileName = "gear2.gif";
-			configureAction.urlName = (String) parsedMap.get("config_url");
-			build.addAction(configureAction);
+//            HockeyappBuildAction installAction = new HockeyappBuildAction();
+//            installAction.displayName = Messages.HOCKEYAPP_INSTALL_LINK();
+//            installAction.iconFileName = "package.gif";
+//            installAction.urlName = (String) parsedMap.get("public_url");
+//            build.addAction(installAction);
+//
+//            HockeyappBuildAction configureAction = new HockeyappBuildAction();
+//            configureAction.displayName = Messages.HOCKEYAPP_CONFIG_LINK();
+//            configureAction.iconFileName = "gear2.gif";
+//            configureAction.urlName = (String) parsedMap.get("config_url");
+//            build.addAction(configureAction);
 
 			if (cleanupOld) {
                 String number = vars.expand(numberOldVersions);
