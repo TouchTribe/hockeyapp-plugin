@@ -107,14 +107,14 @@ public class HockeyappRecorder extends Recorder {
                     return false;
                 }
                 httpPost = new HttpPost(
-                        "https://rink.hockeyapp.net/api/2/apps/" + appId +"/app_versions");
+                        "https://rink.hockeyapp.net/api/2/apps/" + vars.expand(appId) +"/app_versions");
             } else {
                 httpPost = new HttpPost(
                         "https://rink.hockeyapp.net/api/2/apps/upload");
 
             }
 			FileBody fileBody = new FileBody(file);
-			httpPost.setHeader("X-HockeyAppToken", apiToken);
+            httpPost.setHeader("X-HockeyAppToken", vars.expand(apiToken));
 			MultipartEntity entity = new MultipartEntity();
 			if (useChangelog) {
 			//StringBuilder sb = new StringBuilder(super.buildCompletionMessage(publisher,build,listener));
@@ -184,22 +184,23 @@ public class HockeyappRecorder extends Recorder {
 			build.addAction(configureAction);
 
 			if (cleanupOld) {
+                String number = vars.expand(numberOldVersions);
 				if (appId == null) {
 					listener.getLogger().println(Messages.APP_ID_MISSING_FOR_CLEANUP());
 					listener.getLogger().println(Messages.ABORTING_CLEANUP());
 					return false;
 				}
-				if (numberOldVersions == null || !StringUtils.isNumeric(numberOldVersions)) {
+                if (number == null || !StringUtils.isNumeric(number)) {
 					listener.getLogger().println(Messages.COUNT_MISSING_FOR_CLEANUP());
 					listener.getLogger().println(Messages.ABORTING_CLEANUP());
 					return false;
 				}
-				if (Integer.parseInt(numberOldVersions) < 1) {
+                if (Integer.parseInt(number) < 1) {
 					listener.getLogger().println(Messages.TOO_FEW_VERSIONS_RETAINED());
 					listener.getLogger().println(Messages.ABORTING_CLEANUP());
 					return false;
 				}
-				cleanupOldVersions(listener);
+                cleanupOldVersions(listener, vars);
 			}
 		} catch (Exception e) {
 			e.printStackTrace(listener.getLogger());
@@ -274,15 +275,15 @@ public class HockeyappRecorder extends Recorder {
 		return actions;
 	}
 
-	private boolean cleanupOldVersions(BuildListener listener) {
+	private boolean cleanupOldVersions(BuildListener listener, EnvVars vars) {
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(
-			        "https://rink.hockeyapp.net/api/2/apps/" + appId
+			        "https://rink.hockeyapp.net/api/2/apps/" + vars.expand(appId)
 						+ "/app_versions/delete");
-			httpPost.setHeader("X-HockeyAppToken", apiToken);
+			httpPost.setHeader("X-HockeyAppToken", vars.expand(apiToken));
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			nameValuePairs.add(new BasicNameValuePair("keep", numberOldVersions));
+			nameValuePairs.add(new BasicNameValuePair("keep", vars.expand(numberOldVersions)));
 			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			HttpResponse response = httpclient.execute(httpPost);
 			HttpEntity resEntity = response.getEntity();
